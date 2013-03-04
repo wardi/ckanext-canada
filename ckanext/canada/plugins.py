@@ -19,13 +19,13 @@ class DataGCCAPublic(p.SingletonPlugin):
         p.toolkit.add_template_directory(config, 'templates/public')
         p.toolkit.add_public_directory(config, 'public')
 
+
 class DataGCCAInternal(p.SingletonPlugin):
     """
     Plugin for internal version of data.gc.ca site, aka the "registry"
     This plugin requires the DataGCCAPublic and DataGCCAForms plugins
     """
     p.implements(p.IConfigurer)
-
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates/internal')
 
@@ -35,6 +35,7 @@ class DataGCCAForms(p.SingletonPlugin, DefaultDatasetForm):
     Plugin for dataset forms for Canada's metadata schema
     """
     p.implements(p.IDatasetForm, inherit=True)
+    p.implements(p.IRoutes)
 
     def is_fallback(self):
         """
@@ -113,6 +114,16 @@ class DataGCCAForms(p.SingletonPlugin, DefaultDatasetForm):
         # breaks with the new three-stage dataset creation when using
         # convert_to_extras.
         pass
+    
+    def after_map(self, map_):
+        return map_
+
+    def before_map(self, map_):
+        map_.connect('/dataset/{id}/resource_edit/{resource_id}',
+            controller="ckanext.canada.controllers:DataGCCAController",
+            action="resource_edit")
+        return map_
+
 
 class DataGCCAPackageController(p.SingletonPlugin):
     p.implements(p.IPackageController)
