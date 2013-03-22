@@ -85,11 +85,13 @@ class CanadaCommand(CkanCommand):
         skip_lines = int(skip_lines)
         count = 0
         total = 0.0
+        log = file('real.log', 'a')
 
         for num, line in enumerate(open(jl_source)):
             if num < skip_lines:
                 continue
             print "line %d:" % num,
+            log.write(str(count) + ",")
             try:
                 start = time.time()
                 context = {'user': username}
@@ -100,6 +102,8 @@ class CanadaCommand(CkanCommand):
                 end = time.time()
                 count += 1
                 total += end - start
+                log.write("%f\n" % (end - start,))
+                log.flush()
                 print "%f seconds, %f average" % (end - start, total / count)
 
     def load_rando(self, username):
