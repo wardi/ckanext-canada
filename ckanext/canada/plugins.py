@@ -112,13 +112,17 @@ def _schema_update(schema, form_to_db):
         if name in schema:
             continue # don't modify existing fields.. yet
 
+        # quick hack #2: no extras but tag_extras
+        continue
+
         v = _schema_field_validators(name, lang, field)
         if v is not None:
             schema[name] = v[0] if form_to_db else v[1]
 
     for name in ('maintainer', 'author', 'author_email',
             'maintainer_email', 'license_id', 'department_number'):
-        del schema[name]
+        if name in schema:
+            del schema[name]
 
     if not form_to_db:
         schema['tags']['__extras'].append(free_tags_only)

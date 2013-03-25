@@ -106,9 +106,15 @@ class CanadaCommand(CkanCommand):
                 tag_fields = 'tags', 'subject', 'topic_category'
                 pkg['tag_extra'] = ','.join(t['name'] for t in pkg['tags'])
                 if pkg['topic_category']:
-                    pkg['tag_extra'] += pkg['topic_category']
+                    pkg['tag_extra'] += '|' + pkg['topic_category']
                 for field in tag_fields:
                     del pkg[field]
+
+                # quick hack #2": no extras but tag_extras
+                for fname, lang, f in schema_description.dataset_fields_by_ckan_id(False):
+                    if fname in pkg:
+                        pkg['tag_extra'] += '|' + pkg[fname]
+                        del pkg[fname]
 
                 response = get_action('package_create')(context, pkg)
             except ValidationError, e:
