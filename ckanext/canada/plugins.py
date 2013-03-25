@@ -123,6 +123,12 @@ def _schema_update(schema, form_to_db):
     if not form_to_db:
         schema['tags']['__extras'].append(free_tags_only)
 
+    # quick hack: store tags in an extra field
+    if form_to_db:
+        schema['tag_extra'] = [ignore_missing, unicode, convert_to_extras]
+    else:
+        schema['tag_extra'] = [convert_from_extras, ignore_missing]
+
 def _schema_field_validators(name, lang, field):
     """
     return a tuple with lists of validators for the field:

@@ -101,6 +101,15 @@ class CanadaCommand(CkanCommand):
                 start = time.time()
                 context = {'user': username, 'return_id_only': True}
                 pkg = json.loads(line)
+
+                # quick hack to convert tags to an extra
+                tag_fields = 'tags', 'subject', 'topic_category'
+                pkg['tag_extra'] = ','.join(t['name'] for t in pkg['tags'])
+                if pkg['topic_category']:
+                    pkg['tag_extra'] += pkg['topic_category']
+                for field in tag_fields:
+                    del pkg[field]
+
                 response = get_action('package_create')(context, pkg)
             except ValidationError, e:
                 print str(e)
