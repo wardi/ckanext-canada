@@ -3,5 +3,7 @@
 {% ckan_extends %}
 {% import 'macros/form_canada.html' as cform %}
 
-{% block errors %}{{ cform.errors(
-  errors, schema_description.dataset_field_by_id, h.lang()) }}{% endblock %}
+{%- block errors -%}
+{{- cform.errors(errors, schema_description.dataset_field_by_id, h.lang(),
+  c.userobj.sysadmin) -}}
+{%- endblock -%}

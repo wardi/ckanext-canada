@@ -213,6 +213,7 @@ Build a list of errors for the current form.
 errors        - A dict of field/message pairs.
 schema_fields - schema_description.dataset_field_by_id or .resource_field...
 client_lang   - language from h.lang(): 'en' or 'fr'
+sysadmin      - True if user is a sysadmin
 
 Example:
 
@@ -220,7 +221,7 @@ Example:
   {{ form.errors(error_summary, type="warning") }}
 
 #}
-{% macro errors(errors={}, schema_fields, client_lang) %}
+{% macro errors(errors={}, schema_fields, client_lang, sysadmin) %}
   {% set client_lang = 'fra' if client_lang == 'fr' else 'eng' %}
   {% if errors %}
     <div class="error-explanation module-alert margin-bottom-large alert-{{ type }}{{ " " ~ classes | join(' ') }}">
@@ -242,6 +243,12 @@ Example:
           <li data-field-label="{{ key }}">{% if key %}{{
             label }}: {% endif %}{{ ', '.join(error) }}</li>
         {% endfor %}
+        {% if sysadmin %}
+          <p>
+            <input type="checkbox" name="validation_override" /> {{
+              _('Override validation') }}
+          </p>
+        {% endif %}
       </ul>
     </div>
   {% endif %}
