@@ -54,3 +54,8 @@ def _changed_packages_activity_list_since(since, limit):
     q = q.order_by(model.Activity.timestamp)
     q = q.filter(model.Activity.timestamp > since)
     return q.limit(limit)
+
+@side_effect_free
+def raise_search_index_error(context, data_dict):
+    from ckan.lib.search import SearchIndexError
+    raise SearchIndexError

@@ -9,7 +9,7 @@ from ckanext.canada.metadata_schema import schema_description
 from ckanext.canada.navl_schema import (create_package_schema,
     update_package_schema, show_package_schema)
 from ckanext.canada.logic import (group_show, organization_show,
-    changed_packages_activity_list_since)
+    changed_packages_activity_list_since, raise_search_index_error)
 
 
 ORG_MAY_PUBLISH_KEY = 'publish'
@@ -96,6 +96,8 @@ class DataGCCAForms(p.SingletonPlugin, DefaultDatasetForm):
             'organization_show': organization_show,
             'changed_packages_activity_list_since':
                 changed_packages_activity_list_since,
+            'raise_search_index_error':
+                raise_search_index_error,
             }
 
     # IDatasetForm
