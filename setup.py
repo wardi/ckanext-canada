@@ -33,4 +33,12 @@ setup(
     [paste.paster_command]
     canada=ckanext.canada.commands:CanadaCommand
     """,
-)
+    message_extractors = {
+        'ckan': [
+            ('**.py', 'python', None),
+            ('**.js', 'javascript', None),
+            ('templates/**.html', 'ckan', None),
+            ('public/**', 'ignore', None),
+            ]
+        },
+    )
