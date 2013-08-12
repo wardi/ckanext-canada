@@ -11,28 +11,29 @@ import functools
 def limit_api_logic():
     """
     Return a dict of logic function names to their wrappers
-    that override existing api calls with more restricive parameters
+    that override existing api calls with hard limits applied
     """
     api_limits = {
-        'group_show': {'context': {'limits': {'packages': 2}}},
-        'organization_show': {'context': {'limits': {'packages': 2}}},
-        'user_activity_list': {'data_dict': {'limit': 2}},
-        'current_package_list_with_resources': {'data_dict': {'limit': 2}},
-        'group_package_show': {'data_dict': {'limit': 2}},
-        'package_search': {'data_dict': {'rows': 20}},
-        'resource_search': {'data_dict': {'limit': 20}},
-        'package_activity_list': {'data_dict': {'limit': 2}},
-        'group_activity_list': {'data_dict': {'limit': 2}},
-        'organization_activity_list': {'data_dict': {'limit': 2}},
-        'recently_changed_packages_activity_list': {'data_dict': {'limit': 10}},
-        'user_activity_list_html': {'data_dict': {'limit': 2}},
-        'package_activity_list_html': {'data_dict': {'limit': 2}},
-        'group_activity_list_html': {'data_dict': {'limit': 2}},
-        'organization_activity_list_html': {'data_dict': {'limit': 2}},
+        'group_show': {'context': {'limits': {'packages': 128}}},
+        'organization_show': {'context': {'limits': {'packages': 128}}},
+        'user_activity_list': {'data_dict': {'limit': 128}},
+        'current_package_list_with_resources': {'data_dict': {'limit': 32}},
+        'group_package_show': {'data_dict': {'limit': 32}},
+        'package_search': {'data_dict': {'rows': 128}},
+        'resource_search': {'data_dict': {'limit': 128}},
+        'package_activity_list': {'data_dict': {'limit': 128}},
+        'group_activity_list': {'data_dict': {'limit': 128}},
+        'organization_activity_list': {'data_dict': {'limit': 128}},
+        'recently_changed_packages_activity_list':
+            {'data_dict': {'limit': 128}},
+        'user_activity_list_html': {'data_dict': {'limit': 128}},
+        'package_activity_list_html': {'data_dict': {'limit': 128}},
+        'group_activity_list_html': {'data_dict': {'limit': 128}},
+        'organization_activity_list_html': {'data_dict': {'limit': 128}},
         'recently_changed_packages_activity_list_html':
-            {'data_dict': {'limit': 10}},
-        'dashboard_activity_list': {'data_dict': {'limit': 2}},
-        'dashboard_activity_list_html': {'data_dict': {'limit': 2}},
+            {'data_dict': {'limit': 128}},
+        'dashboard_activity_list': {'data_dict': {'limit': 128}},
+        'dashboard_activity_list_html': {'data_dict': {'limit': 128}},
         }
     out = {}
     for name, limits in api_limits.items():
