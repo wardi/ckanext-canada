@@ -418,6 +418,7 @@ class CanadaCommand(CkanCommand):
         outputs that action as a string 'created', 'updated', 'deleted'
         or 'unchanged'
         """
+
         if self.options.push_apikey and not self.options.fetch:
             registry = LocalCKAN()
             portal = RemoteCKAN(remote, apikey=self.options.push_apikey)
@@ -434,6 +435,12 @@ class CanadaCommand(CkanCommand):
             package_ids = iter(sys.stdin.readline, '')
 
         for package_id in package_ids:
+            import time
+            timestamps = []
+            def ts(i):
+                "poor man's line_profiler"
+                timestamps.append((i, time.time()))
+            ts(str(package_ids))
             package_id = package_id.strip()
             reason = None
             target_deleted = False
@@ -443,8 +450,10 @@ class CanadaCommand(CkanCommand):
                 source_pkg = None
             if source_pkg and source_pkg['state'] == 'deleted':
                 source_pkg = None
+            ts(1)
 
             _trim_package(source_pkg)
+            ts(2)
 
             if source_pkg and not self.options.mirror:
                 # treat unpublished packages same as deleted packages
@@ -463,8 +472,10 @@ class CanadaCommand(CkanCommand):
             if target_pkg and target_pkg['state'] == 'deleted':
                 target_pkg = None
                 target_deleted = True
+            ts(3)
 
             _trim_package(target_pkg)
+            ts(4)
 
             if target_pkg is None and source_pkg is None:
                 action = 'unchanged'
@@ -473,21 +484,33 @@ class CanadaCommand(CkanCommand):
                 action = 'updated'
                 reason = 'undeleting on target'
                 portal.action.package_update(**source_pkg)
+                ts(10)
             elif target_pkg is None:
                 action = 'created'
                 portal.action.package_create(**source_pkg)
+                ts(20)
             elif source_pkg is None:
                 action = 'deleted'
                 portal.action.package_delete(id=package_id)
+                ts(30)
             elif source_pkg == target_pkg:
                 action = 'unchanged'
                 reason = 'no difference found'
             else:
                 action = 'updated'
                 portal.action.package_update(**source_pkg)
+                ts(40)
 
             sys.stdout.write(json.dumps([package_id, action, reason]) + '\n')
             sys.stdout.flush()
+            ts(100)
+
+            with open("/var/www/log/copy_datasets.log", 'a') as f:
+                prev = 0
+                for i, t in timestamps:
+                    f.write("%s: %f\n" % (i, t-prev))
+                    prev = t
+                f.write('total: %f\n\n' % (t-timestamps[0][1],))
 
 
     def create_organization(self, org):
