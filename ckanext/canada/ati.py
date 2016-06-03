@@ -153,7 +153,7 @@ def _update_records(records, org_detail, conn):
             'hash': 'avexlb',
             'id': unique + 'en',
             'i18n_ts_en_ati_request_number': r.get('request_number', ''),
-            'i18n_ts_en_ati_request_summary': r.get('summary_eng', ''),
+            'i18n_ts_en_ati_request_summary': r.get('summary_en', ''),
             'ss_ati_contact_information_en':
                 "http://open.canada.ca/data/en/organization/about/{0}"
                 .format(org),
@@ -176,7 +176,7 @@ def _update_records(records, org_detail, conn):
             'hash': 'avexlb',
             'id': unique + 'fr',
             'i18n_ts_fr_ati_request_number': r.get('request_number', ''),
-            'i18n_ts_fr_ati_request_summary': r.get('summary_fra', ''),
+            'i18n_ts_fr_ati_request_summary': r.get('summary_fr', ''),
             'ss_ati_contact_information_fr':
                 "http://ouvert.canada.ca/data/fr/organization/about/{0}"
                 .format(org),
