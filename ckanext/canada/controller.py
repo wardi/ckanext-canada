@@ -167,6 +167,48 @@ class CanadaController(BaseController):
             return h.redirect_to(controller='user',
                 action='login', locale=lang)
 
+    def datatable(self, resource_name, resource_id):
+        from ckanext.recombinant.tables import get_chromo
+        t = get_chromo(resource_name)
+        echo = int(request.params['sEcho'])
+        search_text = unicode(request.params['sSearch'])
+        offset = int(request.params['iDisplayStart'])
+        limit = int(request.params['iDisplayLength'])
+        sort_cols = int(request.params['iSortingCols'])
+        if sort_cols:
+            sort_by_num = int(request.params['iSortCol_0'])
+            sort_order = 'desc' if request.params['sSortDir_0'] == 'desc' else 'asc'
+
+        lc = LocalCKAN(username=c.user)
+
+        unfiltered_response = lc.action.datastore_search(
+            resource_id=resource_id,
+            limit=1,
+            )
+
+        cols = [f['datastore_id'] for f in t['fields']]
+        sort_str = ''
+        if sort_cols:
+            sort_str = cols[sort_by_num] + ' ' + sort_order
+
+        response = lc.action.datastore_search(
+            q=search_text,
+            resource_id=resource_id,
+            fields=cols,
+            offset=offset,
+            limit=limit,
+            sort=sort_str)
+
+        return json.dumps({
+            'sEcho': echo,
+            'iTotalRecords': unfiltered_response.get('total', 0),
+            'iTotalDisplayRecords': response.get('total', 0),
+            'aaData': [
+                [row[colname] for colname in cols]
+                for row in response['records']],
+            })
+
+
 class CanadaFeedController(FeedController):
     def general(self):
         data_dict, params = self._parse_url_params()

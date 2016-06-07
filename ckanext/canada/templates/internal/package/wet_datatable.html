@@ -2,7 +2,10 @@
 <section>
   <div class="dtprv-overflow">
     <h2 id="prtable">{{_("Preview")}}</h2>
-<table id="dtprv" class="wet-boew-tables" data-wet-boew='{"bZebra": true, "bPaginate": true}' data-role="table" data-mode="columntoggle">
+<table id="dtprv" class="wet-boew-tables"
+  data-wet-boew='{"bZebra": true, "bPaginate": true, "bServerSide": true, "sAjaxSource": "/datatable/{{ resource_name }}/{{ resource_id }}"}'
+  data-role="table"
+  data-mode="columntoggle" >
   <thead>
     <tr class="font-small">
       {% set i = 1 %}
