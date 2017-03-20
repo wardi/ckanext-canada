@@ -205,9 +205,12 @@ def _update_records(records, org_detail, conn, resource_name, unmatched):
 
     out = []
 
-    choice_fields = dict(
+    choice_fields_en = dict(
         (f['datastore_id'], dict(f['choices']))
-        for f in recombinant_choice_fields(resource_name, all_languages=True))
+        for f in recombinant_choice_fields(resource_name, prefer_lang='en'))
+    choice_fields_fr = dict(
+        (f['datastore_id'], dict(f['choices']))
+        for f in recombinant_choice_fields(resource_name, prefer_lang='fr'))
 
     if any('solr_compare_previous_year' in f for f in chromo['fields']):
         if not unmatched:
@@ -272,14 +275,13 @@ def _update_records(records, org_detail, conn, resource_name, unmatched):
                     solrrec['date_year'] = value
             solrrec[key] = value
 
-            choices = choice_fields.get(f['datastore_id'])
-            if choices:
+            choices_en = choice_fields_en.get(f['datastore_id'])
+            choices_fr = choice_fields_fr.get(f['datastore_id'])
+            if choices_en:
                 if key.endswith('_code'):
                     key = key[:-5]
-                solrrec[key + '_en'] = recombinant_language_text(
-                    choices.get(value, ''), 'en')
-                solrrec[key + '_fr'] = recombinant_language_text(
-                    choices.get(value, ''), 'fr')
+                solrrec[key + '_en'] = choices_en.get(value, u'')
+                solrrec[key + '_fr'] = choices_fr.get(value, u'')
 
         solrrec['text'] = u' '.join(unicode(v) for v in solrrec.values())
 
